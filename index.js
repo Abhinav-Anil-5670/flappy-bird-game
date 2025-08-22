@@ -31,6 +31,11 @@ let gameover = false
 
 let score = 0
 
+let wind_sound = new Audio("./music/sfx_wing.wav")
+let hit_sound = new Audio("./music/sfx_hit.wav")
+let bgm_sound = new Audio("./music/bgm_mario.mp3")
+bgm_sound.loop = true
+
 let bird = {
     x: birdX,  y : birdY , width : birdWidth , height : birdHeight
 }
@@ -40,6 +45,7 @@ window.onload = ()=>{
     board.height = boardHeight
     board.width = boardWidth
     context = board.getContext("2d")
+    
 
     //draw bird
 
@@ -84,6 +90,7 @@ function update(){
         context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height)
         if(detectCollision(bird,pipe)){
             gameover = true
+            hit_sound.play()
         }
         if(!pipe.passed && bird.x > pipe.x + pipe.width){
             score +=0.5
@@ -99,6 +106,8 @@ function update(){
         context.fillStyle = "white"
         context.font = "45px sans-serif"
         context.fillText("GAME OVER",5,90)
+        bgm_sound.pause()
+        bgm_sound.currentTime = 0
     }
 
     //clear pipes
@@ -139,10 +148,15 @@ function placePipes(){
 
 function moveBird(e){
     if(e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX" ){
+        if(bgm_sound.paused){
+            bgm_sound.play()
+
+        }
         //jump
+        wind_sound.play()
+        
         velocityY = -3
     }
-
     //reset
     if(gameover){
         bird.y = birdY
@@ -150,6 +164,7 @@ function moveBird(e){
         score = 0
         gameover = false
     }
+
 }
 
 function detectCollision(a,b){
