@@ -8,7 +8,8 @@ let boardHeight = 640
 let birdWidth = 34
 let birdHeight = 24
 let birdX = boardWidth/8
-let birdY = boardHeight/2
+let birdY = boardHeight/3;  // instead of boardHeight/2
+
 let birdImage
 
 //pipes
@@ -23,6 +24,8 @@ let BottomPipeImg
 
 //gamePhysics
 let velocityX = -1
+let velocityY = -3;
+let gravity = 0.1
 
 let bird = {
     x: birdX,  y : birdY , width : birdWidth , height : birdHeight
@@ -50,6 +53,8 @@ window.onload = ()=>{
     BottomPipeImg.src = './images/bottompipe.png'
     setInterval(placePipes,1500)
 
+    document.addEventListener("keydown",moveBird)
+
 }
 
 function update(){
@@ -57,6 +62,8 @@ function update(){
     requestAnimationFrame(update)
     context.clearRect(0,0,boardWidth,boardHeight)
 
+    velocityY += gravity
+    bird.y = Math.max(bird.y + velocityY,0)
     context.drawImage(birdImage,bird.x, bird.y , bird.width, bird.height)
 
     //pipes
@@ -92,4 +99,11 @@ function placePipes(){
         passed : false
     }
     pipeArray.push(bottomPipe)
+}
+
+function moveBird(e){
+    if(e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX" ){
+        //jump
+        velocityY = -3
+    }
 }
