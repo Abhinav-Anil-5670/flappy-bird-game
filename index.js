@@ -21,6 +21,8 @@ let pipeY = 0
 let topPipeImg
 let BottomPipeImg
 
+//gamePhysics
+let velocityX = -1
 
 let bird = {
     x: birdX,  y : birdY , width : birdWidth , height : birdHeight
@@ -33,8 +35,6 @@ window.onload = ()=>{
     context = board.getContext("2d")
 
     //draw bird
-    context.fillStyle = "green"
-    // context.fillRect(bird.x, bird.y , bird.width, bird.height )
 
     birdImage = new Image()
     birdImage.src = './images/flappybird.png'
@@ -55,23 +55,25 @@ window.onload = ()=>{
 function update(){
 
     requestAnimationFrame(update)
-    context.clearRect(0,0,boardWidth,birdHeight)
+    context.clearRect(0,0,boardWidth,boardHeight)
 
     context.drawImage(birdImage,bird.x, bird.y , bird.width, bird.height)
 
     //pipes
     for(let i = 0; i < pipeArray.length;i++){
-        let pipe = topPipe[i]
+        let pipe = pipeArray[i]
+        pipe.x += velocityX
         context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height)
     }
 
 }
 
 function placePipes(){
+    let randomPipeY = pipeY - pipeHeight/4 - (Math.random())* (pipeHeight/2)
     let topPipe = {
         img : topPipeImg,
         x : pipeX,
-        y : pipeY,
+        y : randomPipeY,
         width : pipeWidth,
         height : pipeHeight,
         passed : false
