@@ -29,6 +29,8 @@ let gravity = 0.1
 
 let gameover = false
 
+let score = 0
+
 let bird = {
     x: birdX,  y : birdY , width : birdWidth , height : birdHeight
 }
@@ -83,8 +85,26 @@ function update(){
         if(detectCollision(bird,pipe)){
             gameover = true
         }
+        if(!pipe.passed && bird.x > pipe.x + pipe.width){
+            score +=0.5
+            pipe.passed = true
+        }
     }
     
+    context.fillStyle = "white"
+    context.font = "45px sans-serif"
+    context.fillText(score,5,45)
+
+    if(gameover){
+        context.fillStyle = "white"
+        context.font = "45px sans-serif"
+        context.fillText("GAME OVER",5,90)
+    }
+
+    //clear pipes
+    while(pipeArray.length>0 && pipeArray[0].x < -pipeWidth){
+        pipeArray.shift() //removes first element from the array
+    }
 
 }
 
@@ -121,6 +141,14 @@ function moveBird(e){
     if(e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX" ){
         //jump
         velocityY = -3
+    }
+
+    //reset
+    if(gameover){
+        bird.y = birdY
+        pipeArray = []
+        score = 0
+        gameover = false
     }
 }
 
